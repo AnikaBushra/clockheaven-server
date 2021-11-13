@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -19,12 +20,25 @@ async function run() {
         await client.connect();
         const database = client.db('clockShop');
         const clockCollection = database.collection('clocks');
+        const userCollection = database.collection('user')
 
         // get clocks api 
         app.get('/clocks', async (req, res) => {
             const cursor = clockCollection.find({});
             const clock = await cursor.toArray();
             res.send(clock);
+        });
+        // get signle clock api 
+        app.get('/clocks/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const clock = await clockCollection.findOne(query);
+            res.json(clock);
+        });
+        app.post('/orders', async (req, res) => {
+            const datas = req.body;
+            const result = await userCollection.insertOne(datas);
+            res.json(result);
         })
     }
     finally {
