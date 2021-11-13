@@ -22,6 +22,7 @@ async function run() {
         const clockCollection = database.collection('clocks');
         const userCollection = database.collection('user');
         const reviewCollection = database.collection('reviews');
+        const usersCollection = database.collection('users');
 
         // get clocks api 
         app.get('/clocks', async (req, res) => {
@@ -77,6 +78,21 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         });
+        //post users
+        app.post('/users', async (req, res) => {
+            const userdata = req.body;
+            const result = await usersCollection.insertOne(userdata);
+            res.json(result);
+        });
+        // update users 
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const updateDoc = { $set: { role: 'admin' } };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        })
+
     }
     finally {
         // await client.close();
