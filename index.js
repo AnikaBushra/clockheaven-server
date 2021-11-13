@@ -35,10 +35,34 @@ async function run() {
             const clock = await clockCollection.findOne(query);
             res.json(clock);
         });
+        // Post orders 
         app.post('/orders', async (req, res) => {
             const datas = req.body;
             const result = await userCollection.insertOne(datas);
             res.json(result);
+        });
+        // get Orders 
+        app.get('/orders', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const cursor = userCollection.find(query);
+            const orders = await cursor.toArray();
+            res.json(orders);
+        });
+        // get One order ...
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const order = await userCollection.findOne(query);
+            res.json(order);
+        });
+        // delete orders
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await userCollection.deleteOne(query);
+            res.json(result);
+
         })
     }
     finally {
