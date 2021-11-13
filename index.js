@@ -20,7 +20,8 @@ async function run() {
         await client.connect();
         const database = client.db('clockShop');
         const clockCollection = database.collection('clocks');
-        const userCollection = database.collection('user')
+        const userCollection = database.collection('user');
+        const reviewCollection = database.collection('reviews');
 
         // get clocks api 
         app.get('/clocks', async (req, res) => {
@@ -64,6 +65,18 @@ async function run() {
             res.json(result);
 
         })
+        // Post reviews 
+        app.post('/reviews', async (req, res) => {
+            const datas = req.body;
+            const result = await reviewCollection.insertOne(datas);
+            res.json(result);
+        });
+        // get reviews ...
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewCollection.find({});
+            const result = await cursor.toArray();
+            res.send(result);
+        });
     }
     finally {
         // await client.close();
