@@ -24,7 +24,7 @@ async function run() {
         const reviewCollection = database.collection('reviews');
         const usersCollection = database.collection('users');
 
-        // get clocks api 
+        // get clocks api ... 
         app.get('/clocks', async (req, res) => {
             const cursor = clockCollection.find({});
             const clock = await cursor.toArray();
